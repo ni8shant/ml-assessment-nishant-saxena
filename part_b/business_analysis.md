@@ -200,25 +200,26 @@ The model adapts recommendations based on seasonality, customer behavior, and pr
 
 1. Model saving
 - save the train pipeline using
-import joblib
-joblib.dump(model_pipeline, "model.pkl")
+_import joblib_
+_joblib.dump(modelpipeline,"model.pkl")_
 
 2. Monthly Prediction Workflow
 
-1 At the start of each month:
+* 1 At the start of each month:
 - Collect new data.
 - Correct month info (month, festival, etc.).
 - Competition data.
 
-2 Apply same pre-processing:
+* 2 Apply same pre-processing:
 - Feature engineering.
 - Encoding and scaling via pipeline.
 
-3 Load model and predict.
-model = joblib.load("model.pkl")
-predictions = model.predict(new_data)
+* 3 Load model and predict
 
-4 Select promotion with highest predicted items_sold
+_model = joblib.load("model.pkl")_
+_predictions = model.predict(newdata)_
+
+* 4 Select promotion with highest predicted items_sold
 
 3. Monitoring Strategy 
 A: Performance monitoring
