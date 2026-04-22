@@ -6,7 +6,8 @@
 
 The objective is to determine which promotion strategy maximizes the number of items sold at each store for a given month.
 
-_Target Variable:_ - items_sold
+_Target Variable:_ 
+- items_sold
 
 _Input Features:_
 * Store characteristics: store_id, store_size, location_type
@@ -15,26 +16,26 @@ _Input Features:_
 * Market factors: competition_density
 * Customer behavior proxies: footfall, basket_size
 
-_Type of ML problem_
+_Type of ML problem_  
 This is a supervised learning regression problem, as the goal is to predict a continuous numerical outcome (item_sold) based on historical data. 
 
-_Justification:_
+_Justification:_  
 Since past data contains both input (features) and output (items_sold), the model learned the relationship between them to predict future sales under different promotional strategies. 
 
 ### (b) Why Items Sold is Better than Revenue
 
 Using item_sold (sales volume) is more reliable than total value for evaluating promotional effectiveness.
-* Reason 1: removes prices bia
+* Reason 1: removes prices bias  
 Revenue is influenced by product pricing and discount levels, which can distort the true effectiveness of a promotion.
 For example, a heavy discount may increase revenue slightly but significantly increase the number of items sold. 
 
-* Reason 2: Direct Measure of Demand
+* Reason 2: Direct Measure of Demand  
 Item sold directly reflects customer demand and response to promotions, making it a more accurate indicator of promotion success.
 
-* Reason #: compareable across promotions
+* Reason #: compareable across promotions  
 Direct promotions (e.g. BOGO vs Discount) affect priceing differently. using items sold to ensure fair  ensures fair comparison across strategies. 
 
-* Broader Priciple:
+* Broader Priciple:  
 This illustrates the importance of selecting a target variable that aligns closely with the business objective and avoids external distortion. In real-world ML, the target should measure the true outcome of interest, not a proxy affected by confounding factors. 
 
 ### (c) Alternative Modelling Strategy
@@ -51,7 +52,7 @@ _Proposed Strategy: Segmented or Hierarchical Modeling_
   * Use a single model but include an interaction term between promotion_type and location_type.
   * Allows the model to learn how different promotions perform in different regions. 
 
-* Justification:
+* Justification:  
 Customer preference, purchasing power, and compensation vary significantly across locations. A segmented or intersection-based approach ensures that the model captures these differences, leading to more accurate and actionable recommendations.   
 
 
@@ -65,7 +66,7 @@ The raw data is available in four tables:
 - promotional details
 - calendar
 
-1. Step 1: Joining Strategy 
+1. Step 1: Joining Strategy  
 * Join transactions with store attributes using a store_id, promotion details using promotion_type, and the calendar table using transaction_date.
 
 2. Step 2: Grain of Final Dataset
@@ -106,8 +107,8 @@ Before modeling, the following EDA steps would be performed.
 * Purpose- to identify relationships and multicollinearity.
 * Impact- It helps in feature selection and avoiding redundant variables. 
 
-* Conclusion of EDA
-_EDA helps uncover patterns in promotions, seasonality, and store behavior, guiding feature engineering and model selection.
+* Conclusion of EDA  
+EDA helps uncover patterns in promotions, seasonality, and store behavior, guiding feature engineering and model selection.
 
 
 ### (c) Handling Promotion Imbalance
@@ -129,7 +130,7 @@ _Solutions:_
 * Create a binary feature "has_promotion"
 * analyzes promotions or non-promotions separately. 
 
-_Conclusion:_
+_Conclusion:_  
 Addressing imbalance ensures the model properly learns the effect of promotions rather than being dominated by non-promotion data. 
 
 
@@ -138,15 +139,15 @@ Addressing imbalance ensures the model properly learns the effect of promotions 
 
 ### (a) Train-Test Split & Evaluation Metrics
 
-_Train-test split strategy:_
+_Train-test split strategy:_  
 since the data is time series(monthly over 3 years), a temporal split should be used:
 * Train on the first 80% of months (early period) 
-* Test on the last 20% of months (most recent period).
-_Example:_ 
+* Test on the last 20% of months (most recent period).  
+_Example:_   
 * Train: year 1 + year2 + part of year 3
 * Test on the remaining months of year 3
 
-_Why is a random split inappropriate?_
+_Why is a random split inappropriate?_  
 A random split breaks the time order and causes data leakage, where future information is used to predict past outcomes.
 - Unrealistic evaluation
 - Over-optimistic performance
@@ -167,7 +168,7 @@ Evaluation Metrics
 - Measures error in percentage terms
 - Interpretation: useful for comparing performance across stores with different sales volume
 
-_Conclusion:_
+_Conclusion:_  
 RMSE captures the risk of large errors, while MAE reflects a risk prediction accuracy, making them suitable for business decision making. 
 
 ### (b) Explaining Different Recommendations
@@ -187,55 +188,55 @@ This model recommends different promotions for the same store because feature va
 - Compare how these features differ between December and March
 
 
-_How to communicate to the marketing team?_
+_How to communicate to the marketing team?_  
 Example:
 In December, the model recommends a loyalty points bonus because historical data shows that during the festive period, customers respond better to reward-based promotions.
 In March, the model recommends a flat discount because demand is lower and customers are more price-sensitive, making discounts more effective.
 
-_conclusion:_
+_conclusion:_  
 The model adapts recommendations based on seasonality, customer behavior, and promotion effectiveness, not just store identity. 
 
 
 ### (c) Deployment Strategy
 
 1. Model saving
-- save the train pipeline using  
-import joblib  
-joblib.dump(modelpipeline,"model.pkl")  
+ - save the train pipeline using  
+  import joblib  
+  joblib.dump(modelpipeline,"model.pkl")  
 
 2. Monthly Prediction Workflow
 
-* 1 At the start of each month:
-- Collect new data.
-- Correct month info (month, festival, etc.).
-- Competition data.
+  * 1 At the start of each month:
+ - Collect new data.
+ - Correct month info (month, festival, etc.).
+ - Competition data.
 
-* 2 Apply same pre-processing:
-- Feature engineering.
-- Encoding and scaling via pipeline.
+  * 2 Apply same pre-processing:
+ - Feature engineering.
+ - Encoding and scaling via pipeline.
 
-* 3 Load model and predict  
-model = joblib.load("model.pkl")  
-predictions = model.predict(newdata)  
+  * 3 Load model and predict  
+  model = joblib.load("model.pkl")  
+  predictions = model.predict(newdata)  
 
-* 4 Select promotion with highest predicted items_sold
+  * 4 Select promotion with highest predicted items_sold
 
 3. Monitoring Strategy 
-A: Performance monitoring
-- Track RMSE/MAE over time
-- Compare predicted vs actual sales
-B: Data drift detection
-- Check if input features distribution changes (example: new customer behavior)
-C: Prediction Drift
-- Sudden change in predicted value
+  A: Performance monitoring
+  - Track RMSE/MAE over time
+  - Compare predicted vs actual sales
+  B: Data drift detection
+  - Check if input features distribution changes (example: new customer behavior)
+  C: Prediction Drift
+  - Sudden change in predicted value
 
 
-4. Retraining Trigger
-Retrain the model when:
-- Performance drops significantly
-- Data distribution shift
-- New trend emerges (example., new promotion time)
+4. Retraining Trigger  
+  Retrain the model when:
+  - Performance drops significantly
+  - Data distribution shift
+  - New trend emerges (example., new promotion time)
 
 
-_Conclusion:_ 
+_Conclusion:_  
 A robust deployment pipeline ensures consistent prediction, while monitoring ensures the model remains accurate and relevant over time.
