@@ -158,7 +158,7 @@ A random split breaks the time order and causes data leakage, where future infor
   - Not aligned with real-world deployment
 
 
-Evaluation Metrics
+_Evaluation Metrics_
 
 1. RMSE (Root Mean Squared Error)
   - Penalize large error more heavily
@@ -179,7 +179,7 @@ RMSE captures the risk of large errors, while MAE reflects a risk prediction acc
 
 This model recommends different promotions for the same store because feature values change across months and influencing the prediction.
 
- How to investigate using feature importance:
+ _How to investigate using feature importance:_
 1. Check key features for both months:
    - month (December vs. March seasonality)
    - is_festival (December likely festive, March may not be)
@@ -205,8 +205,8 @@ The model adapts recommendations based on seasonality, customer behavior, and pr
 
 1. Model saving
     - save the train pipeline using  
-     import joblib  
-     joblib.dump(modelpipeline,"model.pkl")  
+     '''import joblib'''  
+     '''joblib.dump(modelpipeline,"model.pkl")'''  
 
 2. Monthly Prediction Workflow
 
@@ -220,8 +220,8 @@ The model adapts recommendations based on seasonality, customer behavior, and pr
    - Encoding and scaling via pipeline.
 
    3 Load model and predict  
-     model = joblib.load("model.pkl")  
-     predictions = model.predict(newdata)  
+     '''model = joblib.load("model.pkl")'''  
+     '''predictions = model.predict(newdata)'''  
 
    4 Select promotion with highest predicted items_sold
 
