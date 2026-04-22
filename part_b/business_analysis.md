@@ -199,9 +199,9 @@ The model adapts recommendations based on seasonality, customer behavior, and pr
 ### (c) Deployment Strategy
 
 1. Model saving
-- save the train pipeline using
-_import joblib_
-_joblib.dump(modelpipeline,"model.pkl")_
+- save the train pipeline using  
+import joblib  
+joblib.dump(modelpipeline,"model.pkl")  
 
 2. Monthly Prediction Workflow
 
@@ -216,8 +216,8 @@ _joblib.dump(modelpipeline,"model.pkl")_
 
 * 3 Load model and predict
 
-_model = joblib.load("model.pkl")_
-_predictions = model.predict(newdata)_
+model = joblib.load("model.pkl")  
+predictions = model.predict(newdata)  
 
 * 4 Select promotion with highest predicted items_sold
 
