@@ -206,20 +206,20 @@ The model adapts recommendations based on seasonality, customer behavior, and pr
 
 2. Monthly Prediction Workflow
 
-  * 1 At the start of each month:
+   1 At the start of each month:
  - Collect new data.
  - Correct month info (month, festival, etc.).
  - Competition data.
 
-  * 2 Apply same pre-processing:
+   2 Apply same pre-processing:
  - Feature engineering.
  - Encoding and scaling via pipeline.
 
-  * 3 Load model and predict  
+   3 Load model and predict  
   model = joblib.load("model.pkl")  
   predictions = model.predict(newdata)  
 
-  * 4 Select promotion with highest predicted items_sold
+   4 Select promotion with highest predicted items_sold
 
 3. Monitoring Strategy 
   A: Performance monitoring
