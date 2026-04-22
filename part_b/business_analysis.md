@@ -89,3 +89,153 @@ Before modeling, the following EDA steps would be performed.
 1. Distribution Analysis (Histogram of items_sold)
 * Purpose check: check skewness, outliners
 * Impact: May apply log transformations if heavily skewed. 
+
+2. Promotion effectiveness(Boxplot of item_sold vs promotion_type)
+* Purpose: compare performance of different promotions 
+* Impact: helps identify strong/ weak promotion - feature importance expectation.  
+
+3. Time-based trend (line plot over months/years)
+* Purpose- identifies seasonality and trends 
+* Impacts- justifies using features like month, year, is_month_end. 
+
+4. Location-based analysis (bar chart: item_sold vs location_type)
+* Purpose: compare urban, semi-urban, and rural performance
+* impact- supporters, segmentation, or interaction features. 
+
+5. Correlation heatmap (numerical features)
+* Purpose- to identify relationships and multicollinearity.
+* Impact- It helps in feature selection and avoiding redundant variables. 
+
+* Conclusion of EDA
+_EDA helps uncover patterns in promotions, seasonality, and store behavior, guiding feature engineering and model selection.
+
+
+### (c) Handling Promotion Imbalance
+
+Since 80% of transactions occur without promotion, the data set is highly imbalanced. 
+
+_Problem:_
+* Model may become biased toward no-promotion cases
+* Poor learning of promotion impact - weak recommendations. 
+
+_Solutions:_
+1. Re-sampling Techniques
+* Over-sample promotion cases or under-sample non-promotion cases.
+
+2. Use Sample Vities
+* Assigning Higher Importance to Promotion Records 
+
+3. Feature Engineering
+* Create a binary feature "has_promotion"
+* analyzes promotions or non-promotions separately. 
+
+_Conclusion:_
+Addressing imbalance ensures the model properly learns the effect of promotions rather than being dominated by non-promotion data. 
+
+
+
+## B3. Model Evaluation and Deployment
+
+### (a) Train-Test Split & Evaluation Metrics
+
+_Train-test split strategy:_
+since the data is time series(monthly over 3 years), a temporal split should be used:
+* Train on the first 80% of months (early period) 
+* Test on the last 20% of months (most recent period).
+_Example:_ 
+* Train: year 1 + year2 + part of year 3
+* Test on the remaining months of year 3
+
+_Why is a random split inappropriate?_
+A random split breaks the time order and causes data leakage, where future information is used to predict past outcomes.
+- Unrealistic evaluation
+- Over-optimistic performance
+- Not aligned with real-world deployment
+
+
+Evaluation Metrics
+
+1. RMSE (Root Mean Squared Error)
+- Penalize large error more heavily
+- Interpretations: large mistakes in predicting demand are costly (example: a stock out or overstocking)
+
+2. MAE (Mean Absolute Error)
+- Measures average error in prediction
+- Interpretation: easy to understand - average deviation in items sold for a store
+
+3. MAPE (Mean Absolute Percentage Error)
+- Measures error in percentage terms
+- Interpretation: useful for comparing performance across stores with different sales volume
+
+_Conclusion:_
+RMSE captures the risk of large errors, while MAE reflects a risk prediction accuracy, making them suitable for business decision making. 
+
+### (b) Explaining Different Recommendations
+
+This model recommends different promotions for the same store because feature values change across months and influencing the prediction.
+
+ How to investigate using feature importance:
+1. Check key features for both months:
+- month (December vs. March seasonality)
+- is_festival (December likely festive, March may not be)
+- is_month_end
+- promotion_type_impact
+- Competition_density
+
+2. Use feature importance/contribution:
+- Identify which features that have the highest influence (example: promotions,month, festival)
+- Compare how these features differ between December and March
+
+
+_How to communicate to the marketing team?_
+Example:
+In December, the model recommends a loyalty points bonus because historical data shows that during the festive period, customers respond better to reward-based promotions.
+In March, the model recommends a flat discount because demand is lower and customers are more price-sensitive, making discounts more effective.
+
+_conclusion:_
+The model adapts recommendations based on seasonality, customer behavior, and promotion effectiveness, not just store identity. 
+
+
+### (c) Deployment Strategy
+
+1. Model saving
+- save the train pipeline using
+import joblib
+joblib.dump(model_pipeline, "model.pkl")
+
+2. Monthly Prediction Workflow
+
+1 At the start of each month:
+- Collect new data.
+- Correct month info (month, festival, etc.).
+- Competition data.
+
+2 Apply same pre-processing:
+- Feature engineering.
+- Encoding and scaling via pipeline.
+
+3 Load model and predict.
+model = joblib.load("model.pkl")
+predictions = model.predict(new_data)
+
+4 Select promotion with highest predicted items_sold
+
+3. Monitoring Strategy 
+A: Performance monitoring
+- Track RMSE/MAE over time
+- Compare predicted vs actual sales
+B: Data drift detection
+- Check if input features distribution changes (example: new customer behavior)
+C: Prediction Drift
+- Sudden change in predicted value
+
+
+4. Retraining Trigger
+Retrain the model when:
+- Performance drops significantly
+- Data distribution shift
+- New trend emerges (example., new promotion time)
+
+
+_Conclusion:_ 
+A robust deployment pipeline ensures consistent prediction, while monitoring ensures the model remains accurate and relevant over time.
