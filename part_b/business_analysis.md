@@ -16,7 +16,7 @@ _Input Features:_
 * Market factors: competition_density
 * Customer behavior proxies: footfall, basket_size
 
-_Type of ML problem_  
+_Type of ML problem:_  
 This is a supervised learning regression problem, as the goal is to predict a continuous numerical outcome (item_sold) based on historical data. 
 
 _Justification:_  
@@ -34,7 +34,7 @@ Using item_sold (sales volume) is more reliable than total value for evaluating 
 
   Item sold directly reflects customer demand and response to promotions, making it a more accurate indicator of promotion success.
 
-* Reason #: compareable across promotions  
+* Reason 3: compareable across promotions  
 
   Direct promotions (e.g. BOGO vs Discount) affect priceing differently. using items sold to ensure fair  ensures fair comparison across strategies. 
 
@@ -55,7 +55,7 @@ _Proposed Strategy: Segmented or Hierarchical Modeling_
   * Use a single model but include an interaction term between promotion_type and location_type.
   * Allows the model to learn how different promotions perform in different regions. 
 
-* Justification:  
+_Justification:_  
 Customer preference, purchasing power, and compensation vary significantly across locations. A segmented or intersection-based approach ensures that the model captures these differences, leading to more accurate and actionable recommendations.   
 
 
@@ -64,16 +64,16 @@ Customer preference, purchasing power, and compensation vary significantly acros
 ### (a) Data Joining, Grain, and Aggregation
 
 The raw data is available in four tables:
-  - transactions
-  - store attributes
-  - promotional details
-  - calendar
+     - transactions
+     - store attributes
+     - promotional details
+     - calendar
 
 1. Step 1: Joining Strategy  
-  * Join transactions with store attributes using a store_id, promotion details using promotion_type, and the calendar table using transaction_date.
+    * Join transactions with store attributes using a store_id, promotion details using promotion_type, and the calendar table using transaction_date.
 
 2. Step 2: Grain of Final Dataset
-  * The final dataset should be at the store-month level, example, one row is= one store for a month. This aligns with the business goal of deciding which promotion to run per store per month. 
+    * The final dataset should be at the store-month level, example, one row is= one store for a month. This aligns with the business goal of deciding which promotion to run per store per month. 
 
 3. Step 3; Aggeegations
    Since transactions are at a lower level(daily or per transaction) we aggregate
@@ -92,24 +92,24 @@ Because aggregating to a store-month level ensures consistency between data stru
 Before modeling, the following EDA steps would be performed. 
 
 1. Distribution Analysis (Histogram of items_sold)
-  * Purpose check: check skewness, outliners
-  * Impact: May apply log transformations if heavily skewed. 
+     * Purpose check: check skewness, outliners
+     * Impact: May apply log transformations if heavily skewed. 
 
 2. Promotion effectiveness(Boxplot of item_sold vs promotion_type)
-  * Purpose: compare performance of different promotions 
-  * Impact: helps identify strong/ weak promotion - feature importance expectation.  
+      * Purpose: compare performance of different promotions 
+      * Impact: helps identify strong/ weak promotion - feature importance expectation.  
 
 3. Time-based trend (line plot over months/years)
-  * Purpose- identifies seasonality and trends 
-  * Impacts- justifies using features like month, year, is_month_end. 
+     * Purpose- identifies seasonality and trends 
+      * Impacts- justifies using features like month, year, is_month_end. 
 
 4. Location-based analysis (bar chart: item_sold vs location_type)
-  * Purpose: compare urban, semi-urban, and rural performance
-  * impact- supporters, segmentation, or interaction features. 
+     * Purpose: compare urban, semi-urban, and rural performance
+     * impact- supporters, segmentation, or interaction features. 
 
 5. Correlation heatmap (numerical features)
-  * Purpose- to identify relationships and multicollinearity.
-  * Impact- It helps in feature selection and avoiding redundant variables. 
+      * Purpose- to identify relationships and multicollinearity.
+      * Impact- It helps in feature selection and avoiding redundant variables. 
 
 * Conclusion of EDA  
 EDA helps uncover patterns in promotions, seasonality, and store behavior, guiding feature engineering and model selection.
