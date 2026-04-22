@@ -214,7 +214,7 @@ joblib.dump(modelpipeline,"model.pkl")
 - Feature engineering.
 - Encoding and scaling via pipeline.
 
-* 3 Load model and predict
+* 3 Load model and predict  
 model = joblib.load("model.pkl")  
 predictions = model.predict(newdata)  
 
